@@ -46,6 +46,9 @@ void EdgeSE3ProjectXYZ::computeError() {
   const VertexPointXYZ* v2 = static_cast<const VertexPointXYZ*>(_vertices[0]);
   Vector2 obs(_measurement);
   _error = obs - cam_project(v1->estimate().map(v2->estimate()));
+  if (_error.hasNaN()) {
+    std::printf("_error has NaN");
+  }
 }
 
 bool EdgeSE3ProjectXYZ::isDepthPositive() {
