@@ -97,7 +97,13 @@ class BaseEdge : public OptimizableGraph::Edge {
   virtual ~BaseEdge() {}
 
   virtual double chi2() const { 
+      if (_error.hasNaN() || information().hasNaN()) {
+        std::printf("has NaN return 0");
+        return 0;
+      } else {
       return _error.dot(information() * _error); 
+      }
+      
   }
 
   virtual const double* errorData() const { return _error.data(); }
