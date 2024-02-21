@@ -33,6 +33,7 @@
 #include <set>
 #include <unordered_map>
 #include <vector>
+#include <memory>
 
 #include "g2o_core_api.h"
 
@@ -121,21 +122,22 @@ class G2O_CORE_API HyperGraph {
    */
   class G2O_CORE_API DataContainer {
    public:
-    DataContainer() { _userData = 0; }
-    virtual ~DataContainer() { delete _userData; }
-    //! the user data associated with this vertex
-    const Data* userData() const { return _userData; }
-    Data* userData() { return _userData; }
-    void setUserData(Data* obs) { _userData = obs; }
+    DataContainer() : _userData(nullptr) {}
+    virtual ~DataContainer() = default;  // No need to delete _userData
+
+    const Data* userData() const { return _userData.get(); }
+    Data* userData() { return _userData.get(); }
+
+    void setUserData(Data* obs) { _userData.reset(obs); }
     void addUserData(Data* obs) {
       if (obs) {
-        obs->setNext(_userData);
-        _userData = obs;
+        obs->setNext(_userData.release());
+        _userData.reset(obs);
       }
     }
 
    protected:
-    Data* _userData;
+    std::unique_ptr<Data> _userData;
   };
 
   typedef std::set<Edge*> EdgeSet;
