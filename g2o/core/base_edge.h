@@ -96,7 +96,9 @@ class BaseEdge : public OptimizableGraph::Edge {
 
   virtual ~BaseEdge() {}
 
-  virtual double chi2() const { return _error.dot(information() * _error); }
+  virtual double chi2() const { 
+      return _error.dot(information() * _error); 
+  }
 
   virtual const double* errorData() const { return _error.data(); }
   virtual double* errorData() { return _error.data(); }
